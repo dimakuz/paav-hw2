@@ -1,0 +1,9 @@
+\subsection{Question 2}
+The abstract transformer of simple assignment
+\begin{equation*}
+	\atrans{x=y}(a) = a \setminus \{(x,z) \mid z\in \var\}\cup\{(x,w)\mid(y,w)\in a\}
+\end{equation*}
+is distributive, i.e.,
+\begin{equation*}
+	\forall a_1,a_2\in A: \atrans{x=y}(a_1)\sqcup\atrans{x=y}(a_2)=\atrans{x=y}(a_1\sqcup a_2)
+\end{equation*}

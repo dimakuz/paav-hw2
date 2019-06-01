@@ -1,0 +1,13 @@
+\subsection{Question 1}
+The concrete semantics of the statement $x=y$ is
+\begin{equation*}
+\trans{x=y}(s)=s[loc(x)\mapsto s(loc(y))]
+\end{equation*}
+. The abstract transformer associated with this statement is
+\begin{equation*}
+\atrans{x=y}(a) = a \setminus \{(x,z) \mid z\in \var\}\cup\{(x,w)\mid(y,w)\in a\}
+\end{equation*}
+. Show that the abstract transformer is the best, e.g.
+\begin{equation*}
+\atrans{x=y}(a)=\alpha(\{\trans{x=y}(s)\mid s\in \gamma(a)\})
+\end{equation*} for any $a \in A$.

@@ -1,0 +1,7 @@
+\section{Pointer Analysis}
+The states of the concrete semantics used in this section are functions $S = \loc \rightarrow \loc \cup Z$. The abstract domain in this section is $A = 2^{\var \times \var}$ and the abstraction function ($\alpha$) is defined by means of an extraction function ($\beta$), where $\beta(s)=\{(x,y)\mid s(loc(x))=loc(y)\}$. The function $loc: \var \rightarrow \loc$ returns the ``address'' of each variable.
+
+Recall that as usual in cases in which the Galois connection induced by an extraction function, $\alpha(S)=\cup\{\beta(s)\mid s\in S\}$, and $\gamma(a)=\{s\in2^{\var\times\var}\mid\beta(s)\subseteq a\}$.
+\input{q1/q1}
+\input{q1/q2}
+\input{q1/q3}
