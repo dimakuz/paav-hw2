@@ -1,2 +1,73 @@
 \section{Shape Analysis}
 In the 3-valued logic framework for shape analysis, the user needs to provide the update formulae which describe the effect of every program statement on the core and instrumentation predicates. In the class, we defined at the update formulae for the core predicates for list-manipulating programs. Define the update formulae for the instrumentation predicates capturing the properties: reach-ability from variable x, heap-sharing (is-shared), and cyclicity for list manipulating programs. Assume that the pointer variables of the program are $x,y$ and $z$.
+\\ \\
+\begin{itemize}
+\item $r_x(v)$ is the predicate that means that node $v$ is reachable from variable $x$. First, let us define the update formulae for statements that do not change $\mathtt{next}$ predicate:
+\begin{itemize}
+	\item $\mathtt{x=NULL}$:\\
+	$r_x'(v)=0$ \\
+	$\mathtt{x}$ is null, therefore no node is reachable.
+	\item $\mathtt{x=malloc()}$:\\
+	$r_x'(v)=x(v)=isNew(v)$ \\
+	$\mathtt{x}$ is a newly allocated variable, therefore only its node is reachable.
+	\item $\mathtt{x=y}$:\\
+	$r_x'(v)=r_y(v)$ \\ 
+	A node $v$ is reachable from $\mathtt{x}$ if and only if it is reachable from $\mathtt{y}$.
+	\item $\mathtt{x=y->next}$:\\
+	$r_x'(v)=(\neg y(v)\land r_y(v))\lor (y(v)\land c(v))$ \\ 
+	A node $v$ is reachable from $\mathtt{x}$ if it is reachable from $\mathtt{y}$ and is not $\mathtt{y}$'s node, unless $\mathtt{y}$'s node is on a cycle and hence also reachable from $\mathtt{y->next}$.
+\end{itemize}
+Now, consider the case $\mathtt{x->next=y}$. Apart from $r_x$ being updated, for every other variable $\mathtt{z}$ we need to update $r_z$. We break it into two statements \\$\mathtt{x->next=NULL; x->next=y}$. The update formula for the second statement assumes that $\mathtt{x->next}$ is null.
+\begin{itemize}
+	\item $\mathtt{x->next=NULL}$:
+	\begin{itemize}
+	\item $r_x'(v)=x(v)$ \\
+	Only $\mathtt{x}$'s node is now reachable from $\mathtt{x}$.\\
+	\item $r_z'(v)=\begin{cases}
+	\exists v'.x(v')\land n^{*}(v',v), & \text{if } (\exists v'.x(v')\land r_z(v'))\land r_x(v)\land c(v)\\
+	0, & \text{if } (\exists v'.x(v')\land r_z(v'))\land r_x(v)\land \neg c(v)\\
+	r_z(v), & \text{if } \neg(\exists v'.x(v')\land r_z(v'))\lor \neg r_x(v)\\
+	\end{cases} $\\ \\
+	If $\mathtt{x}$'s node is reachable from $\mathtt{z}$ (denoted by $\exists v'.x(v')\land r_z(v')$), and $v$ was reachable from $\mathtt{x}$, and $v$ was part of a cycle, we must compute $r_z'(v)$ anew, because it might be the case that $v$ is reachable from $\mathtt{z}$ after $\mathtt{x}$, so it won't be reachable any longer, or before $\mathtt{x}$, and it will still be reachable.\\ \\
+	If $\mathtt{x}$'s node is reachable from $\mathtt{z}$, and $v$ was reachable from $\mathtt{x}$, and $v$ was not part of a cycle, it won't be reachable any longer.\\ \\
+	Otherwise, $\mathtt{x}$'s node is not reachable from $\mathtt{z}$, or $v$ was not reachable from $\mathtt{x}$, so executing the statement won't change $r_z(v)$.
+	\end{itemize}
+	\item $\mathtt{x->next=y}$:
+	\begin{itemize}
+	\item $r_x'(v)=x(v)\lor r_y(v)$ \\
+	$\mathtt{x}$'s node is reachable along with nodes that are reachable from $\mathtt{y}$.\\
+	\item $r_z'(v)=(\exists v'.x(v')\land r_z(v'))\land r_y(v)$ \\
+	A node $v$ is reachable if $\mathtt{x}$ is reachable from $\mathtt{z}$ and $v$ is reachable from $\mathtt{y}$
+	\end{itemize}
+\end{itemize}
+\item $c(v)$ is the predicate that means that node $v$ is part of a cycle. Note that statements that do not change $\mathtt{next}$ predicate do not affect $c(v)$. So we consider only $\mathtt{x->next=y}$. Again we break it into two statements\\ $\mathtt{x->next=NULL; x->next=y}$.
+\begin{itemize}
+	\item $\mathtt{x->next=NULL}$:\\
+	$c'(v)=\begin{cases}
+	0, & \text{if } \exists v'.x(v')\land r_x(v)\land c(v') \\
+	c(v), & \text{otherwise}
+	\end{cases}$\\ \\
+	If $v$ was reachable from $\mathtt{x}$'s node and $\mathtt{x}$'s node was on a cycle, it means that $v$ was on that cycle as well and now the cycle is cut. Otherwise the value is unchanged \\
+	\item $\mathtt{x->next=y}$:\\
+	$c'(v)=\begin{cases}
+	1, & \text{if } \exists v'.x(v')\land r_y(v')\land r_y(v) \\
+	c(v), & \text{otherwise}
+	\end{cases}$\\ \\
+	If $v$ is reachable from $\mathtt{y}$'s node and also $\mathtt{x}$'s node is reachable from $\mathtt{y}$'s node, it means that a new cycle is created with $v$ on it. Otherwise the value is unchanged \\
+\end{itemize}
+\item $is(v)$ is the predicate that means that at least two different nodes point with $\mathtt{next}$ predicate to $v$. Note that statements that do not change $\mathtt{next}$ do not affect $is(v)$. So we consider only $\mathtt{x->next=y}$. Again we break it into two statements\\ $\mathtt{x->next=NULL; x->next=y}$.
+\begin{itemize}
+	\item $\mathtt{x->next=NULL}$:\\
+	$is'(v)=\begin{cases}
+	\exists v_1, v_2. n(v_1,v)\land n(v_2,v)\land v_1\neq v_2, & \text{if } (\exists v'.x(v')\land n(v',v))\land is(v) \\
+	is(v), & \text{otherwise}
+	\end{cases}$\\ \\
+	If $\mathtt{x}$'s node pointed directly to $v$ and $is(v)=1$, we have to recompute $is(v)$ since now it might be pointed by less than two nodes. Otherwise the value is unchanged. \\
+	\item $\mathtt{x->next=y}$:\\
+	$is'(v)=\begin{cases}
+	\exists v_1, v_2. n(v_1,v)\land n(v_2,v)\land v_1\neq v_2, & \text{if } y(v)\land \neg is(v) \\
+	is(v), & \text{otherwise}
+	\end{cases}$\\ \\
+	If we happen to update $\mathtt{y}$'s node and also $is(v)=0$, we have to recompute $is(v)$ since now it might be pointed by two different nodes. Otherwise the value is unchanged. \\
+\end{itemize}
+\end{itemize}
