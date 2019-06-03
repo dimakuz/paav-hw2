@@ -4,5 +4,30 @@ The abstract transformer of the statement
 	\atrans{*x=y}(a)=a\cup\{(t,z)\mid(x,t)\in a, (y,z)\in a\}
 \end{equation*}
 is not distributive, i.e. exists $a_1,a_2\in A$ s.t.
-\begin{equation*} \atrans{*x=y}(a_1)\sqcup\atrans{*x=y}(a_2)\ne\atrans{*x=y}(a_1\sqcup a_2)
+\begin{equation*}
+\atrans{*x=y}(a_1)\sqcup\atrans{*x=y}(a_2)\ne\atrans{*x=y}(a_1\sqcup a_2)
 \end{equation*}
+\begin{proof}
+We'll show the sets are not equal by showing elements present in $\atrans{*x=y}(a_1\sqcup a_2)$ but not in $\atrans{*x=y}(a_1)\sqcup\atrans{*x=y}(a_2)$.
+
+Let $a_1$ s.t. 
+\begin{itemize}
+	\item $(x, t_1), (y, w_1)\in a_1$
+	\item $(x, t_2),(y, w_2)\notin a_1$
+\end{itemize}
+additionally, let $a_2$ s.t.
+\begin{itemize}
+	\item $(x, t_1), (y, w_1)\notin a_2$ 
+	\item $(x, t_2),(y, w_2)\in a_2$
+\end{itemize}
+then, it holds that:
+\begin{itemize}
+	\item $(t_1, w_1) \in \atrans{*x=y}(a_1)$
+	\item $(t_2, w_2) \in \atrans{*x=y}(a_2)$
+	\item $(t_2, w_2) \notin \atrans{*x=y}(a_1)$
+	\item $(t_1, w_1) \notin \atrans{*x=y}(a_2)$
+\end{itemize}
+therefore also $(t_2, w_2),(t_1, w_1)\notin\atrans{*x=y}(a_1)\sqcup\atrans{*x=y}(a_2)$.
+
+Conversely, $(t_2, w_2),(t_1, w_1)\in\atrans{*x=y}(a_1\sqcup a_2)$.
+\end{proof}
