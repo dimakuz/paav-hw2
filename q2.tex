@@ -55,7 +55,7 @@ Now, consider the case $\mathtt{x->next=y}$. Apart from $r_x$ being updated, for
 	\end{cases}$\\ \\
 	If $v$ is reachable from $\mathtt{y}$'s node and also $\mathtt{x}$'s node is reachable from $\mathtt{y}$'s node, it means that a new cycle is created with $v$ on it. Otherwise the value is unchanged \\
 \end{itemize}
-\item $is(v)$ is the predicate that means that at least two different nodes point with $\mathtt{next}$ predicate to $v$. Note that statements that do not change $\mathtt{next}$ do not affect $is(v)$. So we consider only $\mathtt{x->next=y}$. Again we break it into two statements\\ $\mathtt{x->next=NULL; x->next=y}$.
+\item $is(v)$ is the predicate that means that at least two different nodes point with $\mathtt{next}$ predicate to $v$ ($v$ is heap-shared). Note that statements that do not change $\mathtt{next}$ do not affect $is(v)$. So we consider only $\mathtt{x->next=y}$. Again we break it into two statements\\ $\mathtt{x->next=NULL; x->next=y}$.
 \begin{itemize}
 	\item $\mathtt{x->next=NULL}$:\\
 	$is'(v)=\begin{cases}
