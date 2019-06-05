@@ -11,3 +11,47 @@ The concrete semantics of the statement $x=y$ is
 \begin{equation*}
 \atrans{x=y}(a)=\alpha(\{\trans{x=y}(s)\mid s\in \gamma(a)\})
 \end{equation*} for any $a \in A$.
+\begin{proof}
+We'll show equality by means of bi-directional set inclusion.
+\subsubsection*{Direction 1 $\atrans{x=y}(a)\subseteq\alpha(\{\trans{x=y}(s)\mid s\in \gamma(a)\})$}
+Let $\Delta \in \atrans{x=y}(a)=a\setminus \{(x,z) \mid z\in \var\}\cup\{(x,w)\mid(y,w)\in a\}$, we'll treat 2 cases:
+\begin{itemize}
+	\item $\Delta=(x,w)$ then from abstract transformer definition exists $(y,w)$ in $a$.
+	
+	Let us construct a concrete state $s$ in the following form: $s(loc(y))=loc(w)$ and undefined for all other symbols. It holds that $\beta(s)=\{(y,w)\}\subseteq a$ and therefore $s\in\gamma(a)$.
+	
+	We now use the transformer on $s$ and get $s^\prime=s[loc(x)\mapsto s(loc(y))]{=s[loc(x)\mapsto loc(w)]}$.
+	We got $s^\prime\in\{\trans{x=y}(s)\mid s\in \gamma(a)\}$ and also $s^\prime(loc(x))=loc(w)$.
+	
+	Finally, it holds that
+	\begin{equation*}
+		\Delta=(x,w)\in \beta(s^\prime)=\alpha(\{s^\prime\})\subseteq\alpha(\{\trans{x=y}(s)\mid s\in \gamma(a)\})
+	\end{equation*}	
+	
+	\item $\Delta=(z,w)$ where $z\ne x$ then from abstract transformer definition $(z,y) \in a$. 
+	
+	From that we will construct a concrete state $s$. It will be defined as ${s(loc(z))=loc(w)}$ and undefined for all other symbols, it holds that $\beta(s)=\{(z,w)\}\subseteq a$ thus $s\in\gamma(a)$.
+	
+	If we transform $s$ with $\trans{x=y}$ we'll get $s^\prime=s[loc(x)\mapsto s(loc(y))]$.
+	
+	It is true that $s^\prime \in \{\trans{x=y}(s)\mid s \in \gamma(a)\}$, and $s^\prime(loc(w))=loc(z)$ therefore:
+	\begin{equation*}
+	\Delta=(w,z)\in\beta(s^\prime)=\alpha(\{s^\prime\})\subseteq\alpha(\{\trans{x=y}(s)\mid s \in \gamma(a)\})
+	\end{equation*}
+\end{itemize}
+\subsubsection*{Direction 2 $\atrans{x=y}(a)\supseteq\alpha(\{\trans{x=y}(s)\mid s\in \gamma(a)\})$}
+Let $\Delta\in\alpha(\{\trans{x=y}(s)\mid s\in \gamma(a)\})$ then exists $s^\prime\in\{\trans{x=y}(s)\mid s\in \gamma(a)\}$ s.t.
+$\Delta\in\beta(s^\prime)=\{(a,b)\mid s^\prime(loc(a))=loc(b)\}$. From the original equation we also know that exists $s\in\gamma(a)$ s.t.
+$s^\prime=s[loc(x)\mapsto s(loc(y))]$. Similarly, we'll treat 2 cases here:
+\begin{itemize}
+	\item $\Delta=(x,z)$ then $s^\prime(loc(x))=loc(z)$. It then must hold that $s(loc(y))=loc(z)$ (as~${s^\prime=s[loc(x)\mapsto s(loc(y))]}$).
+	
+	Therefore, $(y,z)\in\beta(s)\subseteq a$. Knowing that $(y,z)\in a$ we can deduce that
+	\begin{equation*}
+		(x,z)\in \{(x,w)\mid (y,w) \in a \}\subseteq\atrans{x=y}(a)
+	\end{equation*}
+	\item $\Delta=(w,z)$ for any $w\ne z$ then $s^\prime(loc(w))=loc(z)$ and from $s^\prime$'s relation with $s$ also $s(loc(w))=loc(z)$.
+	
+	Therefore $(w,z)\in \beta(s)\subseteq a$. Knowing that $(w,z)\in a$ we can deduce that ${\Delta \notin \{(x,z) \mid z\in \var\}}$ therefore $\Delta \in \atrans{x=y}(a)$.
+\end{itemize}
+\end{proof}
