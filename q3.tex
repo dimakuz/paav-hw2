@@ -1,5 +1,74 @@
 \section{Owiki Gries Logic}
 Give a (non-trivial) specification for the following program and prove it using Owicki-Griel logic
 \begin{equation*}
-	\{X=A\wedge Y=B\}x:=X;Y:=1 ||y :=Y; x:=X\ldots
+	\{X=A\land Y=B\}x:=X;Y:=1 ||y :=Y; X:=x\ldots
 \end{equation*}
+\begin{proof}
+We will prove the following specification for the program:
+\begin{equation*}
+	\hoare{X=A\land Y=B}{x:=X;Y:=1 || y:=Y;X:=x}{x=A\lor y=B}
+\end{equation*}
+First, add two auxiliary variables $done_0$ and $done_1$ that record the state of execution of first and second statements accordingly. Now, rewrite the program as:
+\begin{equation*}
+done_0=0;done_1=0;(x:=X;(Y,done_0):=(1,1) || y:=Y;(X,done_1):=(x,1))
+\end{equation*}
+and let $S_0=x:=X;(Y,done_0):=(1,1)$ and $S_1=y:=Y;(X,done_1):=(x,1)$. Define $S_{00}=x:=X$, $S_{01}=(Y,done_0):=(1,1)$, $S_{10}=y:=Y$ and $S_{11}=(X,done_1):=(x,1)$. Now we can define the pre conditions of each sub statement:
+\begin{gather*}
+P_{00}=done_0=0\land (done_1=0\rightarrow X=A)\land (done_1=1\rightarrow (x=A\lor y=B)) \\
+P_{01}=done_0=0\land (done_1=0\rightarrow x=A)\land (done_1=1\rightarrow (x=A\lor y=B)) \\
+P_{10}=done_1=0\land (done_0=0\rightarrow Y=B)\land (done_0=1\rightarrow (x=A\lor y=B)) \\
+P_{11}=done_1=0\land (done_0=0\rightarrow y=B)\land (done_0=1\rightarrow (x=A\lor y=B))
+\end{gather*}
+Also, define the post conditions:
+\begin{gather*}
+Q_{0}=done_0=1\land (done_1=0\rightarrow x=A)\land (done_1=1\rightarrow (x=A\lor y=B)) \\
+Q_{1}=done_1=1\land (done_0=0\rightarrow y=B)\land (done_0=1\rightarrow (x=A\lor y=B))
+\end{gather*}
+$P_{00}$ and $P_{10}$ describe the state of events before the assignment to $x$ or $y$ took place, and $P_{10}$ and $P_{11}$ after, accordingly. After the counterpart statement is done, we can have both $x$ and $y$ updated, or only one of them.\\ \\
+Now we wish to show that $S_0$ and $S_1$ are interference free. To do this we need to prove the following to show that $S_0$ is interference free:
+\begin{gather}
+\hoare{P_{00}\land Q_1}{S_0}{Q_1}\\
+\hoare{P_{00}\land P_{10}}{S_0}{P_{10}}\\
+\hoare{P_{00}\land P_{11}}{S_0}{P_{11}}
+\end{gather}
+Theorem (1) is the post condition test and theorems (2) and (3) are the pre condition tests that check each "sub" pre-condition in $S_1$. And we need to prove the following to show that $S_1$ is interference free:
+\begin{align}
+\hoare{P_{10}\land Q_0}{S_1}{Q_0}\\
+\hoare{P_{10}\land P_{00}}{S_1}{P_{00}}\\
+\hoare{P_{10}\land P_{01}}{S_1}{P_{01}}
+\end{align}
+We are going to use the following identities:
+\begin{gather*}
+Q_0\land Q_1=(x=A\lor y=B)\land done_0=1\land done_1=1 \\
+P_{00}\land Q_1=(x=A\lor y=B)\land done_0=0\land done_1=1 \\
+P_{10}\land Q_0=(x=A\lor y=B)\land done_0=1\land done_1=0 \\
+P_{00}\land P_{10}=X=A\land Y=B\land done_0=0\land done_1=0 \\
+P_{00}\land P_{11}=X=A\land y=B\land done_0=0\land done_1=0 \\
+P_{10}\land P_{01}=x=A\land Y=B\land done_0=0\land done_1=0
+\end{gather*}
+\begin{itemize}
+\item For (1), we have:
+\begin{gather*}
+\{(x=A\lor y=B)\land done_0=0\land done_1=1\}\\
+x:=X;(Y,done_0):=(1,1)\\
+\{done_1=1\land (done_0=0\rightarrow y=B)\land (done_0=1\rightarrow (x=A\lor y=B))\}
+\end{gather*}
+We see that $done_0=1$ at the end, and we have $y=B$ untouched and obviously  $x=A\lor y=B$.
+\item For (2), we have
+\begin{gather*}
+\{X=A\land Y=B\land done_0=0\land done_1=0\}\\
+x:=X;(Y,done_0):=(1,1)\\
+\{done_1=0\land (done_0=0\rightarrow Y=B)\land (done_0=1\rightarrow (x=A\lor y=B))\}
+\end{gather*}
+Use the axiom of Hoare logic $\hoare{X=A}{x:=X}{x=A}$, along with $done_0=1$ at the end, to see that $x=A$ holds.
+\item For (3), we have
+\begin{gather*}
+\{X=A\land y=B\land done_0=0\land done_1=0\}\\
+x:=X;(Y,done_0):=(1,1)\\
+\{done_1=0\land (done_0=0\rightarrow y=B)\land (done_0=1\rightarrow (x=A\lor y=B))\}
+\end{gather*}
+The idea is similar to (2). $done_0=1$ at the end, and $x=A$ holds.
+\end{itemize}
+The idea behind (4), (5) and (6) is symmetrical to (1), (2) and (3), so the proof is skipped.\\ \\
+Now we can show the inference tree for the program
+\end{proof}
