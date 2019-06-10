@@ -103,7 +103,7 @@ Now we can show the inference tree for the program in two parts. First of all, w
 	\hoare{P_{00}\land P_{10}}{S_0||S_1}{Q_0\land Q_1}
 }
 \end{equation}
-First line contains Hoare logic axioms of assignment. Second line is rule of composition. Third line is Owicki-Gries rule for interference free statements. We will use the intermediate result of (7) in the next part:
+First line contains Hoare logic axioms of assignment. Transition from first to second line is rule of composition. Transition from second to third line is Owicki-Gries rule for interference free statements. We will use the intermediate result of (7) in the next part:
 \begin{equation*}
 \inferrule
 {
@@ -119,5 +119,5 @@ First line contains Hoare logic axioms of assignment. Second line is rule of com
 	\hoare{X=A\land Y=B}{x:=X;Y:=1 || y:=Y;X:=x}{x=A\lor y=B}
 }
 \end{equation*}
-Second line is rule of composition. Third line is auxiliary variable rule that gets rid of $done_0$ and $done_1$ and the result is the wanted specification.
+Transition from first to second line is rule of composition. Transition from second to third line is auxiliary variable rule that gets rid of $done_0$ and $done_1$ and the result is the wanted specification.
 \end{proof}

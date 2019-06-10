@@ -1,6 +1,5 @@
 \section{Shape Analysis}
 In the 3-valued logic framework for shape analysis, the user needs to provide the update formulae which describe the effect of every program statement on the core and instrumentation predicates. In the class, we defined at the update formulae for the core predicates for list-manipulating programs. Define the update formulae for the instrumentation predicates capturing the properties: reach-ability from variable x, heap-sharing (is-shared), and cyclicity for list manipulating programs. Assume that the pointer variables of the program are $x,y$ and $z$.
-\\ \\
 \begin{itemize}
 \item $r_x(v)$ is the predicate that means that node $v$ is reachable from variable $x$. First, let us define the update formulae for statements that do not change $\mathtt{next}$ predicate:
 \begin{itemize}
